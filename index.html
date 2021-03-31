@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue数据双向绑定实现</title>
+    <style>
+        h3 {
+            text-align: center;
+        }
+
+        #app {
+            display: flex;
+            font-size: 16px;
+            height: 90vh;
+        }
+
+        .article-textarea {
+            flex: 1;
+            height: 100%;
+            box-sizing: border-box;
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        textarea {
+            resize: none
+        }
+
+        .result {
+            flex: 1;
+            height: 100%;
+            margin: 10px;
+            padding: 10px;
+            line-height: 1.5;
+            background: #f3f3f3;
+            border: 1px solid #666;
+            box-sizing: border-box;
+            overflow: auto;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h3>MarkDown编辑器</h3>
+
+    <div id="app">
+        <textarea id="article-textarea" class="article-textarea" type="text"></textarea>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script src="./js/lib/marked_2.0.1.js"></script>
+    <script src="./js/topic_1.js"></script>
+    <script src="./js/topic_2.js"></script>
+    <script src="./js/topic_3.js"></script>
+    <script src="./js/topic_4.js"></script>
+
+    <script>
+        (function () {
+
+            function init() {
+                var rendererMD = new marked.Renderer();
+                //  marked库的基本配置
+                marked.setOptions({
+                    renderer: rendererMD,
+                    gfm: true,
+                    tables: true,
+                    breaks: false,
+                    pedantic: false,
+                    sanitize: false,
+                    smartLists: true,
+                    smartypants: false
+                });
+
+                var data = { article: "" };
+                var vm = new VM({
+                    data: data,
+                    watch: {
+                        article: function (newVal) {
+                            document.getElementById("result").innerHTML = marked(newVal);
+                        }
+                    }
+                });
+
+                // vm.$watch.bind("article", function (newVal) {
+
+                // });
+
+                document.getElementById("article-textarea").addEventListener("input", throttle(function (e) {
+                    data.article = e.target.value;
+                }, 1000));
+            }
+
+            init();
+        })();
+    </script>
+</body>
+
+</html>
